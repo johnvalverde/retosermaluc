@@ -1,8 +1,11 @@
 package com.sermaluc.reto.auth.services.impl;
 
 //import com.sermaluc.reto.auth.mappers.AuthMapper;
+
 import com.sermaluc.reto.auth.model.*;
+import com.sermaluc.reto.user.mappers.UserMapper;
 import com.sermaluc.reto.utils.exceptions.BusinessException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,12 +19,9 @@ import java.util.List;
 @Service("MyBatisUserDetailService")
 public class MyBatisUserDetailService implements UserDetailsService {
 
+    @Autowired
+    private UserMapper userMapper;
 
-//    private AuthMapper authMapper;
-
-//    public MyBatisUserDetailService(AuthMapper usuariolMapper) {
-//        this.authMapper = usuariolMapper;
-//    }
     public MyBatisUserDetailService() {
 
     }
@@ -30,10 +30,12 @@ public class MyBatisUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 
-        Usuario usuario = new Usuario();
+        User user = userMapper.findUser(username);
+        if (user == null) {
+            throw new BusinessException("Usuario no encontrado");
+        }
 
-
-        return new UserDetailsCustom(usuario);
+        return new UserDetailsCustom(user);
     }
 
 

@@ -6,9 +6,9 @@ CREATE TABLE "USER"(
     created TIMESTAMP,
     modified TIMESTAMP,
     last_login TIMESTAMP,
-    token VARCHAR(100),
     is_active SMALLINT
 );
+
 CREATE TABLE "PHONE"(
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id VARCHAR(50),

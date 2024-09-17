@@ -9,29 +9,27 @@ import java.util.Collection;
 import java.util.List;
 
 public class UserDetailsCustom implements UserDetails {
-    private final Usuario usuario;
+    private final User user;
 
-    public UserDetailsCustom(Usuario usuario) {
-        this.usuario = usuario;
+    public UserDetailsCustom(User user) {
+        this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-
-        usuario.getPerfiles().forEach(r -> authorities.add(new SimpleGrantedAuthority(r.getNombre())));
-
+        authorities.add(new SimpleGrantedAuthority("default"));
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return usuario.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return usuario.getUsername();
+        return user.getUsername();
     }
 
     @Override
@@ -51,7 +49,7 @@ public class UserDetailsCustom implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return usuario.getActivo() == 1;
+        return user.getIsActive() == 1;
     }
 
 }

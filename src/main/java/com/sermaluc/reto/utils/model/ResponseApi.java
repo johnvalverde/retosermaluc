@@ -1,85 +1,30 @@
 package com.sermaluc.reto.utils.model;
 
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
+@Data
 public class ResponseApi<T> {
 
-    private Boolean estado;
-    private Integer status;
-    private String mensaje;
-    private ResponseApiPayload<T> payload;
-    private  ResponseApiDetalle detalle;
+    private int status;
+    private String message;
+    private T body;
 
     public ResponseApi() {
-        this.status=HttpStatus.OK.value();
-        this.estado=true;
-        this.mensaje="El proceso se completó satisfactoriamente.";
-        this.payload= new ResponseApiPayload<>();
+        this.status = 200;
+        this.message = "Success";
+        this.body = null;
     }
 
-
-    public ResponseApi<?> responseError(String mensaje,String mensajeDetalle) {
-
-        this.status=HttpStatus.INTERNAL_SERVER_ERROR.value();
-        this.estado=false;
-        this.mensaje=mensaje;
-        detalle = new ResponseApiDetalle(mensajeDetalle);
+    public ResponseApi<?> responseError(String message) {
+        this.status = 400;
+        this.message = message;
         return this;
     }
 
-    public static <G> ResponseApi<G> build(G g){
+    public static <G> ResponseApi<G> build(G g) {
         ResponseApi<G> responseApi = new ResponseApi<G>();
-        responseApi.getPayload().setEstado(true);
-        responseApi.getPayload().setMensaje("Proceso completado con éxito.");
-        responseApi.getPayload().setBody(g);
+        responseApi.setBody(g);
         return responseApi;
-    }
-
-    public static <G> ResponseApi<G> build(G g,String mensaje){
-        ResponseApi<G> responseApi = new ResponseApi<G>();
-        responseApi.getPayload().setEstado(true);
-        responseApi.getPayload().setMensaje(mensaje);
-        responseApi.getPayload().setBody(g);
-        return responseApi;
-    }
-
-    public Boolean getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Boolean estado) {
-        this.estado = estado;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getMensaje() {
-        return mensaje;
-    }
-
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
-    }
-
-    public ResponseApiPayload<T> getPayload() {
-        return payload;
-    }
-
-    public void setPayload(ResponseApiPayload<T> payload) {
-        this.payload = payload;
-    }
-
-    public ResponseApiDetalle getDetalle() {
-        return detalle;
-    }
-
-    public void setDetalle(ResponseApiDetalle detalle) {
-        this.detalle = detalle;
     }
 }

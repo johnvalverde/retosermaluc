@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sermaluc.reto.user.mappers.UserMapper">
+
+    <insert id="createUser" parameterType="com.sermaluc.reto.user.dtos.CreateUserInputDTO">
+        INSERT INTO "USER" (id, name, email, password, created, modified, last_login, is_active)
+        VALUES (#{userId}, #{name}, #{email}, #{password}, NOW(), NOW(), NOW(), 1);
+    </insert>
+
+    <insert id="createPhone" parameterType="com.sermaluc.reto.user.dtos.CreatePhoneInputDTO">
+        INSERT INTO "PHONE" (user_id, number, city_code, country_code)
+        VALUES (#{usedId}, #{number}, #{cityCode}, #{countryCode});
+    </insert>
+
+    <select id="existsUser" resultType="boolean" parameterType="String">
+        SELECT COUNT(id) > 0
+        FROM "USER"
+        WHERE email = #{email};
+    </select>
+
+    <select id="findUser" resultMap="findUserMap" parameterType="String">
+        SELECT u.id AS userId, u.name, u.password,
+        u.email, FORMATDATETIME(u.created, 'dd/MM/yyyy HH:mm:ss') as created, FORMATDATETIME(u.modified, 'dd/MM/yyyy HH:mm:ss') as modified, FORMATDATETIME(u.last_login, 'dd/MM/yyyy HH:mm:ss') AS lastLogin, u.is_active as isActive,
+        p.number, p.city_code AS cityCode, p.country_code AS countryCode
+        FROM "USER" u
+        LEFT JOIN "PHONE" p on u.id=p.user_id
+        WHERE u.email = #{email};
+    </select>
+
+    <resultMap id="findUserMap" type="com.sermaluc.reto.auth.model.User">
+
+        <id property="userId" column="userId" javaType="string" jdbcType="VARCHAR"/>
+        <result property="name" column="name" javaType="string" jdbcType="VARCHAR"/>
+        <result property="username" column="email" javaType="string" jdbcType="VARCHAR"/>
+        <result property="created" column="created" javaType="string" jdbcType="TIMESTAMP"/>
+        <result property="modified" column="modified" javaType="string" jdbcType="TIMESTAMP"/>
+        <result property="lastLogin" column="lastLogin" javaType="string" jdbcType="TIMESTAMP"/>
+        <result property="isActive" column="isActive" javaType="short" jdbcType="SMALLINT"/>
+        <result property="password" column="password" javaType="string" jdbcType="VARCHAR"/>
+
+        <collection property="phones" ofType="com.sermaluc.reto.user.dtos.ListUserPhoneOutputDTO" javaType="list">
+            <result property="number" column="number" jdbcType="VARCHAR"/>
+            <result property="cityCode" column="cityCode" jdbcType="VARCHAR"/>
+            <result property="countryCode" column="countryCode" jdbcType="VARCHAR"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="listUsers" resultMap="listUsersMap">
+        SELECT u.id AS userId, u.name,
+        u.email, FORMATDATETIME(u.created, 'dd/MM/yyyy HH:mm:ss') as created, FORMATDATETIME(u.modified, 'dd/MM/yyyy HH:mm:ss') as modified, FORMATDATETIME(u.last_login, 'dd/MM/yyyy HH:mm:ss') AS lastLogin, u.is_active as isActive,
+        p.number, p.city_code AS cityCode, p.country_code AS countryCode
+        FROM "USER" u
+        LEFT JOIN "PHONE" p on u.id=p.user_id
+    </select>
+
+    <resultMap id="listUsersMap" type="com.sermaluc.reto.user.dtos.ListUserOutputDTO">
+
+        <id property="userId" column="userId" javaType="string" jdbcType="VARCHAR"/>
+        <result property="name" column="name" javaType="string" jdbcType="VARCHAR"/>
+        <result property="email" column="email" javaType="string" jdbcType="VARCHAR"/>
+        <result property="created" column="created" javaType="string" jdbcType="TIMESTAMP"/>
+        <result property="modified" column="modified" javaType="string" jdbcType="TIMESTAMP"/>
+        <result property="lastLogin" column="lastLogin" javaType="string" jdbcType="TIMESTAMP"/>
+        <result property="isActive" column="isActive" javaType="short" jdbcType="SMALLINT"/>
+
+        <collection property="phones" ofType="com.sermaluc.reto.user.dtos.ListUserPhoneOutputDTO" javaType="list">
+            <result property="number" column="number" jdbcType="VARCHAR"/>
+            <result property="cityCode" column="cityCode" jdbcType="VARCHAR"/>
+            <result property="countryCode" column="countryCode" jdbcType="VARCHAR"/>
+        </collection>
+
+    </resultMap>
+
+
+</mapper>
+

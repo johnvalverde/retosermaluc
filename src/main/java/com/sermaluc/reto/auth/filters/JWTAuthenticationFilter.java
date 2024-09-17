@@ -2,7 +2,7 @@ package com.sermaluc.reto.auth.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sermaluc.reto.auth.model.UserDetailsCustom;
-import com.sermaluc.reto.auth.model.Usuario;
+import com.sermaluc.reto.auth.model.User;
 import com.sermaluc.reto.auth.services.JWTService;
 import com.sermaluc.reto.utils.config.PathsUtil;
 import com.sermaluc.reto.utils.model.ResponseApi;
@@ -47,11 +47,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         username = username != null ? username.trim() : null;
         String password = "";
         if (username == null) {
-            Usuario usuario;
+            User user;
             try {
-                usuario = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
-                username = usuario.getUsername().trim();
-                password = usuario.getPassword().trim();
+                user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+                username = user.getUsername().trim();
+                password = user.getPassword().trim();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -81,10 +81,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         ResponseApi<?> responseApi = new ResponseApi<>();
-        responseApi.setStatus(200);
-        responseApi.setEstado(false);
-        responseApi.setMensaje("El usuario y la contraseña no coinciden, por favor verifique los datos ingresados.");
-        responseApi.setPayload(null);
+        responseApi.setStatus(400);
+        responseApi.setMessage("El usuario y la contraseña no coinciden, por favor verifique los datos ingresados.");
+        responseApi.setBody(null);
 
         response.setStatus(200);
         response.getWriter().write(new ObjectMapper().writeValueAsString(responseApi));

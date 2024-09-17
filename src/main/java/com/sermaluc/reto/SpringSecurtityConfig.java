@@ -63,8 +63,8 @@ public class SpringSecurtityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((auth) -> auth.requestMatchers(
                 PathsUtil.ROOT_API + AUTH + PathsUtil.VERSION + LOGIN).permitAll()
-                        .requestMatchers("/api/propiocore/**").permitAll()
-                        .requestMatchers("/api/exnet/**").permitAll()
+                        .requestMatchers("/api/reto/user/v1.0.0/createUser").permitAll()
+                        .requestMatchers("/api/reto/auth/v1.0.0/login").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated())
 

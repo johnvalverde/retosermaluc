@@ -1,20 +1,24 @@
 package com.sermaluc.reto.utils.services.impl;
 
 import com.sermaluc.reto.utils.services.UtilService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.sermaluc.reto.utils.config.RegEx.REGEX_EMAIL;
-import static com.sermaluc.reto.utils.config.RegEx.REGEX_PWD;
-
 @Service
 public class UtilServiceImpl implements UtilService {
+
+    @Value("${regex.email}")
+    private String regexEmail;
+    @Value("${regex.password}")
+    private String regexPassword;
+
     @Override
     public Boolean isValidEmail(String email) {
 
-        Pattern pattern = Pattern.compile(REGEX_EMAIL);
+        Pattern pattern = Pattern.compile(regexEmail);
 
         if (email == null) {
             return false;
@@ -26,7 +30,7 @@ public class UtilServiceImpl implements UtilService {
     @Override
     public Boolean isValidPassword(String password) {
 
-        Pattern pattern = Pattern.compile(REGEX_PWD);
+        Pattern pattern = Pattern.compile(regexPassword);
 
         if (password == null) {
             return false;
